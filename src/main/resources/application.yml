@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: demo
+  datasource:
+    url: jdbc:h2:mem:ccdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        showSql: true
+        useSqlComments: true
+        formatSql: true
+  sql:
+    init:
+      mode: embedded
