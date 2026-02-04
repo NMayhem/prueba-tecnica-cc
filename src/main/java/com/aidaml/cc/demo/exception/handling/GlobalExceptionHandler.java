@@ -5,6 +5,7 @@ import io.jsonwebtoken.security.SignatureException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.hibernate.query.sqm.PathElementException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -55,6 +56,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(SignatureException.class)
     ResponseEntity<String> handleSignatureException(SignatureException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(PathElementException.class)
+    ResponseEntity<String> handlePathElementException(PathElementException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 

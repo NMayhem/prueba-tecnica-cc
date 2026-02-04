@@ -46,7 +46,7 @@ public class Mapper {
         return address;
     }
 
-        public void updateIfNotBlank(Consumer<String> setter, String value) {
+    public void updateIfNotBlank(Consumer<String> setter, String value) {
         if (value != null && !value.isBlank()) {
             setter.accept(value);
         }

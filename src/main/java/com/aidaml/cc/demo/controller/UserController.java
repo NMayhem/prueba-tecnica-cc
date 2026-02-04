@@ -16,10 +16,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aidaml.cc.demo.exception.AccessDeniedException;
 import com.aidaml.cc.demo.model.domain.User;
+import com.aidaml.cc.demo.model.dto.OrderBy;
 import com.aidaml.cc.demo.model.dto.UserCreationDto;
 import com.aidaml.cc.demo.model.dto.UserUpdateDto;
 import com.aidaml.cc.demo.service.UserService;
@@ -32,12 +34,13 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    // Temp for testing.
-    @GetMapping("/list")
-    public ResponseEntity<List<User>> get(HttpServletRequest request) {
+    // 1.1 and 1.2. GET method to query data. Includes ordering and filtering.
+    @GetMapping("")
+    public ResponseEntity<List<User>> read(HttpServletRequest request,
+        @RequestParam String filter, @RequestParam(required = false) OrderBy orderBy) {
         checkAuthorization(request);
 
-        return ResponseEntity.ok(userService.list());
+        return ResponseEntity.ok(userService.read(filter, orderBy));
     }
 
     // 1.3. POST method to store a new user.
@@ -48,7 +51,7 @@ public class UserController {
         return ResponseEntity.ok(userService.create(userDto));
     }
 
-    // 1.4 PATCH method to update an user.
+    // 1.4. PATCH method to update an user.
     @PatchMapping("/{id}")
     public ResponseEntity<String> update(HttpServletRequest request, @PathVariable UUID id, @RequestBody UserUpdateDto userDto) {
         if (!checkAuthorization(request)) {
@@ -58,7 +61,7 @@ public class UserController {
         return ResponseEntity.ok(userService.update(id, userDto));
     }
 
-    // 1.6. DELETE method to remove an user by ID.
+    // 1.5. DELETE method to remove an user by ID.
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(HttpServletRequest request, @PathVariable UUID id) {
         checkAuthorization(request);

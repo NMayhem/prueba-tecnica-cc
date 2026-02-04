@@ -8,8 +8,10 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.UUID;
+
+import org.hibernate.annotations.UuidGenerator;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,8 +27,8 @@ import lombok.ToString;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    @UuidGenerator
+    private String id;
 
     @Column
     @NotNull
@@ -45,14 +47,14 @@ public class User {
     @JsonIgnore
     private String password;
 
-    @Column(unique=true) // Notes 4: Enforce tax_id uniqueness.
+    @Column(unique=true) // Notes 4: Enforce taxId uniqueness.
     @NotNull
     private String taxId;
 
     @Column
     @NotNull
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd' 'HH:mm")
-    private LocalDateTime createdAt;
+    //@JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd' 'HH:mm")
+    private String createdAt;
 
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Address> addresses;
@@ -60,7 +62,8 @@ public class User {
     @PrePersist  
     protected void onCreate() { 
         // Notes 2: Init timestamp in the Madagascar time zone, yyyy-MM-dd HH:mm format.
-        createdAt = LocalDateTime.now(ZoneId.of("Indian/Antananarivo")); 
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        createdAt = LocalDateTime.now(ZoneId.of("Indian/Antananarivo")).format(dateTimeFormatter);
     }  
 
 }

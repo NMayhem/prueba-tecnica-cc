@@ -10,11 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.aidaml.cc.demo.model.domain.Address;
 import com.aidaml.cc.demo.model.domain.User;
+import com.aidaml.cc.demo.model.dto.OrderBy;
 import com.aidaml.cc.demo.model.dto.UserCreationDto;
 import com.aidaml.cc.demo.model.dto.UserUpdateDto;
 import com.aidaml.cc.demo.exception.DuplicateUsernameException;
 import com.aidaml.cc.demo.model.mapper.Mapper;
 import com.aidaml.cc.demo.repository.AddressRepository;
+import com.aidaml.cc.demo.repository.UserCriteriaRepository;
 import com.aidaml.cc.demo.repository.UserRepository;
 
 @Service
@@ -27,11 +29,10 @@ public class UserService {
     UserRepository userRepository;
 
     @Autowired
-    AddressRepository addressRepository;
+    UserCriteriaRepository userCriteriaRepository;
 
-    public List<User> list() {
-        return userRepository.findAll();
-    }
+    @Autowired
+    AddressRepository addressRepository;
 
     @Transactional
     public String create(UserCreationDto userDto) {
@@ -52,6 +53,10 @@ public class UserService {
         addressRepository.saveAll(addresses);
 
         return "User saved successfully.";
+    }
+
+    public List<User> read(String filter, OrderBy orderBy) {
+        return userCriteriaRepository.findFiltered(filter, orderBy);
     }
 
     @Transactional
