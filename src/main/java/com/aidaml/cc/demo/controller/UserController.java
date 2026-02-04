@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aidaml.cc.demo.model.domain.User;
-import com.aidaml.cc.demo.model.dto.UserCreationDto;
+import com.aidaml.cc.demo.model.dto.UserDto;
 import com.aidaml.cc.demo.service.UserService;
 
 @RestController
@@ -37,7 +37,7 @@ public class UserController {
 
     // 1.3. POST method to store a new user.
     @PostMapping("/users")
-    public ResponseEntity<String> create(HttpServletRequest request, @Valid @RequestBody UserCreationDto userDto) {
+    public ResponseEntity<String> create(HttpServletRequest request, @Valid @RequestBody UserDto userDto) {
         return ResponseEntity.ok(userService.create(userDto));
     }
 

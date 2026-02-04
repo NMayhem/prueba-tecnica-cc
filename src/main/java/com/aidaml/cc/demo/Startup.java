@@ -8,6 +8,7 @@ import com.aidaml.cc.demo.model.domain.User;
 import com.aidaml.cc.demo.model.dto.CountryCode;
 import com.aidaml.cc.demo.repository.AddressRepository;
 import com.aidaml.cc.demo.repository.UserRepository;
+import com.aidaml.cc.demo.security.AESEncryptionService;
 
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -21,6 +22,10 @@ public class Startup {
 	@Autowired
 	AddressRepository addressRepository;
 
+    @Autowired
+    AESEncryptionService aesEncryptionService;
+
+    // This method runs after the application has started in order to populate the DB with our 3 user objects.
 	@EventListener(ApplicationReadyEvent.class)
 	public void runAfterStartup() {
 
@@ -32,19 +37,19 @@ public class Startup {
             usr1.setEmail("user1@mail.com");
             usr1.setName("user1");
             usr1.setPhone("+11234567890");
-            usr1.setPassword("password1");
+            usr1.setPassword(aesEncryptionService.encrypt("password1"));
             usr1.setTaxId("ABCD990101XX0");
     
             usr2.setEmail("user2@mail.com");
             usr2.setName("user2");
             usr2.setPhone("+15555555556");
-            usr2.setPassword("password2");
+            usr2.setPassword(aesEncryptionService.encrypt("password2"));
             usr2.setTaxId("ABCD990101XX1");
     
             usr3.setEmail("user3@mail.com");
             usr3.setName("user3");
             usr3.setPhone("+15555555557");
-            usr3.setPassword("password3");
+            usr3.setPassword(aesEncryptionService.encrypt("password3"));
             usr3.setTaxId("ABCD990101XX2");
     
             userRepository.save(usr1);
