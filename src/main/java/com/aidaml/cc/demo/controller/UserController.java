@@ -23,26 +23,26 @@ import com.aidaml.cc.demo.service.UserService;
 
 @RestController
 @CrossOrigin
-@RequestMapping("")
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
     UserService userService;
 
     // Temp for testing.
-    @GetMapping("/users/list")
+    @GetMapping("/list")
     public ResponseEntity<List<User>> get(HttpServletRequest request) {
         return ResponseEntity.ok(userService.list());
     }
 
     // 1.3. POST method to store a new user.
-    @PostMapping("/users")
+    @PostMapping("")
     public ResponseEntity<String> create(HttpServletRequest request, @Valid @RequestBody UserDto userDto) {
         return ResponseEntity.ok(userService.create(userDto));
     }
 
     // 1.6. DELETE method to remove a user by ID.
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(HttpServletRequest request, @PathVariable UUID id) {
         return ResponseEntity.ok(userService.delete(id));
     }

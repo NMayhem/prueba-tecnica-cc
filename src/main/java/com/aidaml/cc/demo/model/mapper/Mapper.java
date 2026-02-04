@@ -1,19 +1,19 @@
 package com.aidaml.cc.demo.model.mapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.aidaml.cc.demo.model.domain.Address;
 import com.aidaml.cc.demo.model.domain.User;
 import com.aidaml.cc.demo.model.dto.AddressDto;
 import com.aidaml.cc.demo.model.dto.UserDto;
-import com.aidaml.cc.demo.security.AESEncryptionService;
+import com.aidaml.cc.demo.security.AESEncryptionComponent;
 
-@Service
+@Component
 public class Mapper {
 
     @Autowired
-    AESEncryptionService aesEncryptionService;
+    AESEncryptionComponent aesEncryptionComponent;
 
     public User userDtoToEntity(UserDto userDto) {
     
@@ -24,7 +24,7 @@ public class Mapper {
         user.setTaxId(userDto.getTax_id());
 
         try {
-            user.setPassword(aesEncryptionService.encrypt(userDto.getPassword()));
+            user.setPassword(aesEncryptionComponent.cbcEncrypt(userDto.getPassword()));
         } catch(Exception e) {
             System.out.println("Password encryption failed: " + e.getMessage());
         }
