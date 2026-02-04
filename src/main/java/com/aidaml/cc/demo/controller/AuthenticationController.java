@@ -25,6 +25,7 @@ public class AuthenticationController {
     @Autowired
     AuthenticationService authenticationService;
 
+    // 2. Login endpoint.
     @PostMapping("")
     public ResponseEntity<?> login(@RequestBody AuthenticationDto authDto) throws UserNotFoundException {
 

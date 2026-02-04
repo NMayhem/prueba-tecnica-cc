@@ -10,7 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.aidaml.cc.demo.model.domain.Address;
 import com.aidaml.cc.demo.model.domain.User;
-import com.aidaml.cc.demo.model.dto.UserDto;
+import com.aidaml.cc.demo.model.dto.UserCreationDto;
+import com.aidaml.cc.demo.model.dto.UserUpdateDto;
 import com.aidaml.cc.demo.exception.DuplicateUsernameException;
 import com.aidaml.cc.demo.model.mapper.Mapper;
 import com.aidaml.cc.demo.repository.AddressRepository;
@@ -33,7 +34,7 @@ public class UserService {
     }
 
     @Transactional
-    public String create(UserDto userDto) {
+    public String create(UserCreationDto userDto) {
 
         if (userRepository.findByTaxId(userDto.getTax_id()) != null) {
             throw new DuplicateUsernameException();
@@ -44,13 +45,41 @@ public class UserService {
         userRepository.save(user);
         
         List<Address> addresses = userDto.getAddresses()
-                                  .stream()
-                                  .map(e -> mapper.addressDtoToEntity(e, user))
-                                  .collect(Collectors.toList());
+                                         .stream()
+                                         .map(e -> mapper.addressDtoToEntity(e, user))
+                                         .collect(Collectors.toList());
         
         addressRepository.saveAll(addresses);
 
         return "User saved successfully.";
+    }
+
+    @Transactional
+    public String update(UUID id, UserUpdateDto userDto) {
+
+        User user = userRepository.getReferenceById(id);
+
+        mapper.updateIfNotBlank(user::setName, userDto.getName());
+        mapper.updateIfNotBlank(user::setEmail, userDto.getEmail());
+        mapper.updateIfNotBlank(user::setPassword, userDto.getPassword());
+        mapper.updateIfNotBlank(user::setPhone, userDto.getPhone());
+        mapper.updateIfNotBlank(user::setTaxId, userDto.getTax_id());
+
+        if (userDto.getAddresses() != null && !userDto.getAddresses().isEmpty()) {
+            user.getAddresses().clear();
+            
+            List<Address> addresses = userDto.getAddresses()
+                                             .stream()
+                                             .map(e -> mapper.addressDtoToEntity(e, user))
+                                             .collect(Collectors.toList());
+        
+            addressRepository.saveAll(addresses);
+        }
+
+        userRepository.save(user);
+
+        return "User updated successfully.";
+
     }
 
     @Transactional

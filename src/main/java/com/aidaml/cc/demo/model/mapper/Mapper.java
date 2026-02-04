@@ -1,12 +1,14 @@
 package com.aidaml.cc.demo.model.mapper;
 
+import java.util.function.Consumer;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.aidaml.cc.demo.model.domain.Address;
 import com.aidaml.cc.demo.model.domain.User;
 import com.aidaml.cc.demo.model.dto.AddressDto;
-import com.aidaml.cc.demo.model.dto.UserDto;
+import com.aidaml.cc.demo.model.dto.UserCreationDto;
 import com.aidaml.cc.demo.security.AESEncryptionComponent;
 
 @Component
@@ -15,7 +17,7 @@ public class Mapper {
     @Autowired
     AESEncryptionComponent aesEncryptionComponent;
 
-    public User userDtoToEntity(UserDto userDto) {
+    public User userDtoToEntity(UserCreationDto userDto) {
     
         User user = new User();
         user.setName(userDto.getName());
@@ -23,7 +25,7 @@ public class Mapper {
         user.setPhone(userDto.getPhone());
         user.setTaxId(userDto.getTax_id());
 
-        try {
+        try { // Notes 1: AES 256 Password Encryption.
             user.setPassword(aesEncryptionComponent.cbcEncrypt(userDto.getPassword()));
         } catch(Exception e) {
             System.out.println("Password encryption failed: " + e.getMessage());
@@ -42,6 +44,12 @@ public class Mapper {
         address.setUser(user);
 
         return address;
+    }
+
+        public void updateIfNotBlank(Consumer<String> setter, String value) {
+        if (value != null && !value.isBlank()) {
+            setter.accept(value);
+        }
     }
 
 }
